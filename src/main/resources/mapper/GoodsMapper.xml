@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.mapper.GoodsMapper">
+  <resultMap id="BaseResultMap" type="com.qf.pojo.Goods">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="pubdate"  property="pubdate" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="star" jdbcType="TINYINT" property="star" />
+    <result column="typeid" jdbcType="INTEGER" property="typeid" />
+    <result column="intro" property="intro" />
+    <result column="status" property="status" />
+    <result column="number" property="number" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.qf.pojo.Goods">
+    <result column="intro" jdbcType="LONGVARCHAR" property="intro" />
+    <result column="type" property="type"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, pubdate, picture, price, star, typeid,status
+  </sql>
+  <sql id="Blob_Column_List">
+    intro
+  </sql>
+  
+  <select id="selectByUI" parameterType="com.qf.pojo.UINum2" resultMap="ResultMapWithBLOBs">
+  	select tg.*,tt.name type from tb_goods tg left join tb_goods_type tt on tg.typeid=tt.id 
+    <where>
+    <if test="species!=null and title!=null and title!=''">
+    tg.${species} like '%${title}%'
+    </if>
+    <if test="species2!=null and species2!=2">
+    and tg.status=${species2}
+    </if>
+      <if test="species3!=null and species3!=''">
+        and tg.typeid=${species3}
+      </if>
+    </where>
+    <if test="sort!=null and order !=null">
+     order by tg.${sort} ${order}
+    </if>
+  	 limit #{page},#{rows}
+  </select>
+  
+  <select id="selectTotal" parameterType="com.qf.pojo.UINum2" resultType="java.lang.Integer">
+  select count(1) from tb_goods
+  <where>
+  <if test="species!=null and title!=null and title!=''">
+  	${species} like '%${title}%'
+  </if>
+  <if test="species2!=null and species2!=2">
+  	and status =${species2}
+  </if>
+    <if test="species3!=null and species3!='' and species3!=0">
+      and typeid=${species3}
+    </if>
+  </where>
+  </select>
+  
+  <update id="goodsDelete" parameterType="java.util.List">
+  update tb_goods set status=0 
+  where id in
+  <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+  ${item}
+  </foreach>
+  </update>
+  <update id="goodsRestore" parameterType="java.util.List">
+  update tb_goods set status=1
+  where id in
+  <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+  ${item}
+  </foreach>
+  
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select tg.*,tt.name type from tb_goods tg left join tb_goods_type tt on tg.typeid=tt.id 
+    where tg.id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_goods
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qf.pojo.Goods">
+    insert into tb_goods (id, name, pubdate, 
+      picture, price, star, 
+      typeid, intro)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pubdate,jdbcType=DATE}, 
+      #{picture,jdbcType=VARCHAR}, #{price,jdbcType=INTEGER}, #{star,jdbcType=TINYINT}, 
+      #{typeid,jdbcType=INTEGER}, #{intro,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qf.pojo.Goods">
+    insert into tb_goods
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+     
+      <if test="name != null">
+        name,
+      </if>
+      <if test="gdate != null">
+        pubdate,
+      </if>
+      <if test="picture != null">
+        picture,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="star != null">
+        star,
+      </if>
+      <if test="typeid != null">
+        typeid,
+      </if>
+      <if test="intro != null">
+        intro,
+      </if>
+      <if test="status!=null">
+      status,
+      </if>
+      <if test="number!=null">
+        number
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="gdate != null">
+        #{gdate},
+      </if>
+      <if test="picture != null">
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=INTEGER},
+      </if>
+      <if test="star != null">
+        #{star,jdbcType=TINYINT},
+      </if>
+      <if test="typeid != null">
+        #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="intro != null">
+        #{intro,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="status!=null">
+       #{status,jdbcType=INTEGER},
+      </if>
+      <if test="number!=null">
+        #{number}
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.qf.pojo.Goods">
+    update tb_goods
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null">
+        picture = #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=INTEGER},
+      </if>
+      <if test="star != null">
+        star = #{star,jdbcType=TINYINT},
+      </if>
+      <if test="typeid != null">
+        typeid = #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="intro != null">
+        intro = #{intro,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="status!=null">
+      	status=#{status,jdbcType=INTEGER},
+      </if>
+      <if test="number!=null">
+       number=#{number}
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qf.pojo.Goods">
+    update tb_goods
+    set name = #{name,jdbcType=VARCHAR},
+      pubdate = #{pubdate,jdbcType=DATE},
+      picture = #{picture,jdbcType=VARCHAR},
+      price = #{price,jdbcType=INTEGER},
+      star = #{star,jdbcType=TINYINT},
+      typeid = #{typeid,jdbcType=INTEGER},
+      intro = #{intro,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qf.pojo.Goods">
+    update tb_goods
+    set name = #{name,jdbcType=VARCHAR},
+      pubdate = #{pubdate,jdbcType=DATE},
+      picture = #{picture,jdbcType=VARCHAR},
+      price = #{price,jdbcType=INTEGER},
+      star = #{star,jdbcType=TINYINT},
+      typeid = #{typeid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="goodPicUpdate" parameterType="com.qf.pojo.Goods">
+    update tb_goods set picture=#{picture} where id=#{id}
+  </update>
+</mapper>

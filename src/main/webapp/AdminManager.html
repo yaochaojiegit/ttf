@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+  <!-- 引用的css -->
+  <link rel="stylesheet" href="/js/jquery-easyui-1.5/themes/default/easyui.css">
+  <link rel="stylesheet" href="/js/jquery-easyui-1.5/themes/default/panel.css">
+  <link rel="stylesheet" href="/js/jquery-easyui-1.5/themes/icon.css">
+  <link rel="stylesheet" href="/js/layer/skin/layer.css">
+  
+  <script type="text/javascript" src="/js/jquery-easyui-1.5/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/jquery-easyui-1.5/jquery.easyui.min.js"></script>
+  <script src="/js/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
+  
+  <script src="/js/layer/layer.js"></script>
+  <!-- 自定义 -->
+ <!--  <script type="text/javascript" src="js/common.js"></script> -->
+ <style type="text/css">
+
+  </style>
+<title>后台管理</title>
+</head>
+<body class="easyui-layout">
+	<div data-options="region:'north',border:false"
+		style="padding: 5px; background-color: #3D3D3D; color: #fff;">
+		<h1 style="font-size: 20px;" align="center">天天美食后台管理系统</h1>
+	</div>
+
+	<div id="menu" data-options="region:'west'" style="width: 150px">
+		<div id="aa" class="easyui-accordion" style="width: 150px; height: 500px;">
+			<div title="用户管理" data-options="iconCls:'icon-man',selected:true"
+				style="overflow: auto; padding: 10px; text-align:left;" >
+				<ul class="easyui-tree">
+					<li data-options="attributes:{'url':'AdminUserAdd.html'}">新增用户</li>
+					<li data-options="attributes:{'url':'AdminListUser.html'}">用户管理</li>
+
+				</ul>
+			
+			</div>
+
+			<div title="商品管理" data-options="iconCls:'icon-save'"
+				style="padding: 10px;">
+				<ul class="easyui-tree">
+					<li data-options="attributes:{'url':'AdminGoodsAdd.html'}">商品添加</li>
+					<li data-options="attributes:{'url':'AdminListGoods.html'}">商品管理</li>
+					<li data-options="attributes:{'url':'AdminGdsTypeList.html'}">商品种类管理</li>
+					<li data-options="attributes:{'url':'AdminAddressCate.html'}">商品种类树状图</li>
+				</ul>
+			</div>
+			<div title="订单管理" data-options="iconCls:'icon-add'">
+				<ul class="easyui-tree">
+				<li data-options="attributes:{'url':'AdminOrderList.html'}">订单管理</li>
+					<li data-options="attributes:{'url':'AdminOrderDetailList.html'}">订单详情管理</li>
+
+				</ul>
+			</div>
+			<div title="地址管理" data-options="iconCls:'icon-save'">
+				<ul class="easyui-tree">
+				<li data-options="attributes:{'url':'AdminListAdress.html'}">地址管理</li>
+				
+				</ul>
+			</div>
+			<div title="退出登录" data-options="iconCls:'icon-back'">
+				<span style="margin-right: 20px"></span><a href="login.html" style="text-decoration:none;">退出登录</a>
+			</div>
+		</div>
+
+
+	</div>
+
+	<div data-options="region:'south'"
+		style="background-color: #F2F2F2; padding: 5px;">系统版本：V1.0 by 姚超杰</div>
+
+	<div data-options="region:'center'">
+
+		<div id="tt" class="easyui-tabs" data-options="fit:true">
+			<div title="欢迎使用" style="padding: 20px; display: none;text-align: center;"><h1>系统首页面</h1></div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	$(function(){
+		$("#menu .easyui-tree").tree({
+			
+		
+			onClick:function(node){
+				$("#tt").tabs("close",1);//关闭当前
+				$("#tt").tabs("add",{
+					title:node.text,
+					index:1,//在第几个索引打开  从零开始
+					closable:true,//是否可以关闭
+					href:node.attributes.url
+				});
+			
+			}
+		});
+	
+	});
+
+	function addTab(text, href){
+		$('#tt').tabs('close',1);
+		$('#tt').tabs('add',{
+			title: text,
+			index: 1,
+			closable:true,
+			href: href
+		});
+	}
+	</script>
+	
+</body>
+</html>

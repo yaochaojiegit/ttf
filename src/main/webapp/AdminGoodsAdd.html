@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>添加商品界面</title>
+
+</head>
+<body style="width: 1127px;">
+
+ <form id="from0" action="AdminGoodsAddServle" method="post" enctype="multipart/form-data"> 
+      <div style="padding:10px 60px 20px 60px">
+      <h2>商品添加</h2>
+          <table cellpadding="5" style="width: 50%">
+            <tr>
+              <td style="width: 50%"><input id="name" name="name" class="easyui-textbox" data-options="prompt:'商品名称',label:'商品名称:',validType:{length:[1,16]}" iconCls="icon-save" iconAlign=left style="width:100%;height:32px"/></td>
+              <td style="width: 50%" align="right"><input id="type0" name='type0' style="width: 100%;height: 32px" data-options="prompt:'商品类别',label:'商品类别:'"></td>
+            </tr>
+            
+            <tr>
+              <td style="width: 50%"><input id="price" name="price" class="easyui-textbox" data-options="prompt:'商品价格',label:'商品价格'" iconCls="icon-add" iconAlign=left style="width:100%;height:32px"/></td>
+              <td style="width: 50%"><input id="star" name="star" class="easyui-combobox" data-options="prompt:'商品评级',label:'商品评级',panelHeight:115" style="width:100%;height:32px"/></td>
+	
+            </tr>
+            <tr>
+              <td style="width: 50%"><input id="gdate" name="gdate" class="easyui-datebox" data-options="prompt:'点击选择->',label:'入库时间:'"  iconAlign=right style="width:100%;height:32px"/></td>
+              <td style="width: 50%"><input id='file' name='file' style="width:100%;height:32px"/></td>
+         
+            </tr>
+           
+            <tr>
+            <td colspan="2"><input id="intro" name="intro" class="easyui-textbox" data-options="prompt:'说明',label:'说明:'" iconCls="icon-save" iconAlign=left style="width:100%;height:32px"/></td>
+            </tr>
+            <tr><td><input id="typeid" type="hidden"/></td><td></td></tr>
+              <tr>
+                  <td colspan="2" style="text-align: center">
+                      <a onclick="submitForm()" class="easyui-linkbutton"  data-options="iconCls:'icon-ok'" style="width:50%;height:40px;background-color: lightgreen;">确认添加</a>
+                  </td>
+              </tr>
+          </table>
+        
+        <div style="text-align:center;padding:5px; ">
+     
+       </div>
+      </div>
+      </form>
+
+    <script type="text/javascript">
+    $("#star").combobox({
+    		valueField: 'label',
+    		textField: 'value',
+    		limitToList:'true',
+    		data: [{
+    			label: '1',
+    			value: '一'
+    		},{
+    			label: '2',
+    			value: '二'
+    		},{
+    			label: '3',
+    			value: '三'
+    		},{
+    			label: '4',
+    			value: '四'
+    		},{
+    			label: '5',
+    			value: '五'
+    		}]
+    });
+ 	$("#file").filebox({
+ 		buttonText:'点击上传图片',
+ 		buttonAlign:'left'
+ 	
+ 	});
+    $('#type0').combotree({    
+	    url:'AdminGUTreeServle' ,
+	    value:'选择类别',
+	    validateOnCreate: false,
+	    onBeforeSelect: function(node){
+	    	var r = $('#type0').tree('isLeaf',node.target);
+	    	if(!r){
+	    		layer.alert('请选择最终类别');
+	    	}else{
+	    		$("#type").textbox({value:node.text});
+	    		$("#typeid").val(node.id);
+	    	}
+	    	return r;
+	    }
+	}); 
+    
+   
+    
+    function submitForm(){
+    	var d=$("#gdate").datebox('getValue');
+    	var star=$("#star").combobox('getValue');
+    	var name=$("#name").val();
+    	var price=$("#price").val();
+    	var typei=$("#typeid").val();
+    	var intro=$("#intro").val();
+    	
+    	console.log("d="+d);
+    	console.log("d="+star);
+    	console.log("d="+name);
+    	console.log("d="+price);
+    	console.log("d="+typei);
+    	console.log("d="+intro);
+    	
+    	$('#from0').form('submit',{    
+    	    url:'AdminGoodsAddServle',
+    	    novalidate:'true',
+    	    onSubmit: function(data){    
+    	        // do some check    
+    	        // return false to prevent submit;
+    	        data.typeid=typei;
+    	        data.status=1;
+    	        if(intro.length<1){
+    	        	return false;
+    	        }
+    	        return true;
+    	    },    
+    	    success:function(data){    
+    	        if(data==1){
+    	        	layer.alert("添加成功");
+    	        	$("#from0").form('clear');
+    	        }else{
+    	        	layer.alert("添加失败");
+    	        }  
+    	    }    
+    	});
+    	
+    }
+    
+    </script>
+</body>
+</html>

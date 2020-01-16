@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>订单详情管理</title>
+</head>
+<body>
+<h1>订单详情管理</h1>
+<div id="toolbar">
+</div>
+<table id="table"></table>
+<script type="text/javascript">
+$(function(){
+	$("#table").datagrid({
+		url:'/orderDetail/getOrderDetailList',
+		method:'post',
+		rownumbers: true,
+		pagination: true,
+		toolbar:'#toolbar',
+		columns:[[
+			{field:'ck',checkbox:true},
+			{field:'id',title:'订单详情编号',width:150,sortable:true},
+			{field:'oid',title:'订单ID',width:150,sortable:true},
+			{field:'gName',title:'商品名',width:220},
+			{field:'num',title:'数量',width:150,sortable:true},
+			{field:'money',title:'金额',width:200}
+		]]
+		
+	});
+});
+
+</script>
+</body>
+</html>

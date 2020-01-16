@@ -1,0 +1,69 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<!-- 引用的css -->
+<link rel="stylesheet" href="js/jquery-easyui-1.5/themes/default/easyui.css">  
+<link rel="stylesheet" href="js/jquery-easyui-1.5/themes/default/panel.css">  
+<link rel="stylesheet" href="js/jquery-easyui-1.5/themes/icon.css"> 
+<link rel="stylesheet" href="js/layer/skin/layer.css">
+  
+<script type="text/javascript" src="js/jquery-easyui-1.5/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery-easyui-1.5/jquery.easyui.min.js"></script>
+<script src="js/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
+  
+<script src="js/layer/layer.js"></script>
+<title>系统登录页面</title>
+<style type="text/css">
+    body{
+        background: url('images/1930.jpg') no-repeat center;
+        background-size: cover;
+    }
+  .panel{
+  text-align:center;
+  }
+  .panel-title {
+    font-size: 22px;
+    height: 30px;
+    line-height: 30px;
+}
+    .title{
+        width: 80%;
+        height: 96px;
+        padding: 0 90px;
+        position: absolute;
+        top: 36%;
+        left: 0;
+        background: rgba(117,146,213,0.3);
+        color: #FFFFFF;
+        font-size: 48px;
+        line-height: 96px;
+    }
+    .english{
+        color: #A6969B;
+        font-size: 24px;
+        position: absolute;
+        top: 56%;
+        left: 0;
+        font-family: arial, sans-serif;
+        padding: 0 90px;
+    }
+</style>
+</head>
+<body>
+<div class="title">天天美食餐厅</div>
+<i class="english">Tiantian Delicacy restaurant</i>
+  <div data-options=" region:'east',split:true,style:{position:'absolute',right:440,top:250}"
+ class="easyui-panel " title="登录入口" style="width:300px;text-align: center;">
+      <div style="padding:10px 60px 20px 60px">
+          <table cellpadding="5">
+            <tr>
+              <td><a id="student" onclick="location.href='UserLogin.html'" class="easyui-linkbutton"  iconCls="icon-man" iconAlign=left style="width:160px;height:45px;background-color: lightgreen">用户登录</a></td>
+            </tr>
+            <tr>
+              <td><a id="teacher" onclick="location.href='login.html'" class="easyui-linkbutton"  iconCls="icon-man" iconAlign=left style="width:100%;height:45px;background-color: lightgreen">管理员登录</a></td>
+            </tr>
+          </table>
+      </div>
+    </div>
+</body>
+</html>

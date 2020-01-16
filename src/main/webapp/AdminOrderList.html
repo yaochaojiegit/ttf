@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>订单管理</title>
+</head>
+<body>
+<h1>订单管理</h1>
+<div id="toolbar">
+<input id="title" name="title" type="text" class="easyui-textbox" data-options="prompt:'输入搜索内容'">
+<label for="species">选择类别</label>
+<select id="species" name="species" class="easyui-combobox" data-options="panelHeight:45">
+<option value="id">订单编号</option>
+<option value="name">名称</option>
+</select>
+<label for="species2">选择状态</label>
+<select id="species2" name="species2" class="easyui-combobox" data-options="panelHeight:90">
+<option value="">全部订单</option>
+<option value="0">等待中</option>
+<option value="1">已处理</option>
+<option value="2">已取消</option>
+</select>
+
+<a id="search" class="easyui-linkbutton" iconCls="icon-search" onclick="search1()">点击搜索</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a id="upTy"   class="easyui-linkbutton" iconCls="icon-ok"     onclick="upType()">处理订单</a>
+<!--    <a id="downTy" class="easyui-linkbutton" iconCls="icon-cut"    onclick="downType()">取消订单</a>-->
+    <a id="checkDetail"   class="easyui-linkbutton" iconCls="icon-ok"     onclick="checkDetail()">查看订单</a>
+</div>
+<table id="table"></table>
+<div id="detail">
+</div>
+<script type="text/javascript">
+$(function(){
+	$("#table").datagrid({
+		url:'/order/orderList',
+		method:'post',
+		rownumbers: true,
+		pagination: true,
+		toolbar:'#toolbar',
+		columns:[[
+			{field:'ck',checkbox:true},
+			{field:'id',title:'订单编号',width:150,sortable:true},
+			{field:'uid',title:'用户ID',width:150,sortable:true},
+			{field:'uname',title:'用户名',width:220},
+			{field:'money',title:'价钱',width:150,sortable:true},
+			{field:'date',title:'订餐时间',width:200},
+			{field:'address',title:'订餐地址',width:200,formatter:function(value,row,index){
+                    if(value==null||value==""){
+                        return "门店点餐";
+                    }
+                    return value;
+                }},
+			{field:'status',title:'状态',width:100,sortable:true,formatter:function(value,row,index){
+				if(value==0){
+					return "等待处理";
+				}else if(value==1){
+					return "已处理";
+				}
+				return "已取消";
+			}}
+		]]
+		
+	});
+});
+//查看订单详情
+function checkDetail() {
+    var ck=$("#table").datagrid("getSelections");
+    if(ck.length==0){
+        layer.alert("请选中订单");
+        return;
+    }else if(ck.length>1){
+        layer.alert("一次只能查看一个");
+        return;
+    }
+    var check="";
+    $.each(ck,function(index,c){
+        var id=c.id;
+        check+=id+',';
+    });
+    $("#detail").empty();
+    var uri="/orderDetail/getOrderDetailByID";
+    $.post(uri,{orderId:check},function (result) {
+        var data=result.rows;
+        if (data==null&&data.length==0){
+            $("#detail").html("订单查询失败");
+        } else {
+
+            var id=data[0].oid;
+            var time=(data[0].time).substring(0,data[0].time.length-2);
+            var moneyAll=0;
+            var status="";
+            var da="";
+            $.each(data,function (index,item) {
+                da+="<tr>\n" +
+                    "                <td>"+item.gName+"</td>\n" +
+                    "                <td>"+item.num+"</td>\n" +
+                    "                <td>"+item.money+"元</td>\n" +
+                    "            </tr>";
+                moneyAll+=item.money;
+            });
+            if(data[0].status==0){status="等待处理";}
+            else {status="已被处理";}
+            var detail="<div><span>订单编号:"+id+"</span><br>\n" +
+                "   <span>订单时间:"+time+"</span>\n" +
+                "   </div>\n" +
+                "    <hr style=\"height:1px;border:none;border-top:1px solid #555555;\" />\n" +
+                "    <div>\n" +
+                "        <table style=\"border: #52d689;width: 300px\" >\n" +
+                "            <tr>\n" +
+                "                <td>商品名称</td>\n" +
+                "                <td>商品数量</td>\n" +
+                "                <td>商品金额</td>\n" +
+                "            </tr>\n" +da+
+                "        </table>\n" +
+                "    </div>\n" +
+                "    <hr style=\"height:1px;border:none;border-top:1px solid #555555;\" />\n" +
+                "    <div>\n" +
+                "        <span>总金额:"+moneyAll+"元</span><br>\n" +
+                "        <span>付款状态:"+status+"</span>\n" +
+                "    </div>";
+            $("#detail").append(detail);
+        }
+    });
+}
+
+function upType(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中订单");
+		return false;
+	}
+	layer.confirm("你确定这些订单已处理了吗？",{btn:["确定","取消"]},function(index){
+		var check="";
+		$.each(ck,function(index,c){
+			var id=c.id;
+			check+=id+',';
+		});
+		console.log("check="+check);
+		var uri='/order/enterOrder';
+		$.post(uri,{'check':check},function(result){
+			if(result==1){
+				$("#table").datagrid('reload');
+				layer.close(index);
+				layer.alert("处理成功");
+			}else{
+				layer.close(index);
+				layer.alert("处理失败");
+			}
+		});
+	});
+	
+}
+
+function downType(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中订单");
+		return;
+	}
+	layer.confirm("你确定眼取消这些订单",{btn:["确定","取消"]},function(index){
+		var check="";
+		$.each(ck,function(index,c){
+			var id=c.id;
+			check+=id+",";
+		});
+		console.log("check="+check);
+		var uri='';
+		$.post(uri,{"check":check},function(result){
+			if(result==1){
+				$("#table").datagrid('reload');
+				layer.close(index);
+				layer.alert("取消成功");
+			}else{
+				layer.close(index);
+				layer.alert("取消失败");
+			}
+		});
+	});
+}
+ function search1(){
+	 $("#table").datagrid("load",{
+		 title:$("#title").val(),
+		 species:$("#species").combobox('getValue'),
+		 species2:$("#species2").combobox('getValue')
+	 });
+ }
+</script>
+</body>
+</html>

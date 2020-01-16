@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>修改商品界面</title>
+
+</head>
+<body style="width: 1127px;">
+      <div style="padding:10px 160px 20px 60px">
+          <table cellpadding="5">
+              <h2>商品修改</h2>
+          <tr>
+          <td style="width: 50%" rowspan="5">
+          	<div >
+  				<img id="p1"  src="" alt="照片不存在" style="width: 230px;height:230px;" title="点击查看大图" onclick="Tum(this)">
+			</div>
+          </td>
+          <td style="width: 50%">
+          <input id="id" name="id" class="easyui-textbox" data-options="prompt:'商品编号',label:'商品编号:'" iconCls="icon-man" iconAlign=left style="width:100%;height:32px" readonly="readonly"/>
+          </td>
+          </tr>
+          
+            <tr>
+              
+              <td style="width: 50%"><input id="name" name="name" class="easyui-textbox" data-options="prompt:'商品名称',label:'商品名称:',validType:{length:[1,16]}" iconCls="icon-save" iconAlign=left style="width:100%;height:32px"/></td>
+            </tr>
+            <tr>
+             <td style="width: 50%"><input id="status" name="status" class="easyui-combobox" data-options="prompt:'商品状态',label:'商品状态:',panelHeight:47"  style="width:100%;height:32px"/></td>
+            </tr>
+              <tr>
+                  <td style="width: 50%"><input id="number" name="number" class="easyui-textbox" data-options="prompt:'商品数量',label:'商品数量:'"  style="width:100%;height:32px"/></td>
+              </tr>
+              <tr>
+                  <td style="width: 50%;text-align: right"><form action="/goodUpdate/fileUpload" id="from" method="post" enctype="multipart/form-data">
+                      <input id='file' name='file' style="width:70%;height:32px"/>
+                      <a class="easyui-linkbutton" onclick="fileUp()" style="width:28%;height:32px">确认修改</a>
+                      <input id="pic" name="id" type="hidden"/>
+                  </form></td>
+              </tr>
+            <tr>
+              <td style="width: 50%"><input id="type0" class="easyui-combotree" style="width: 100%;height: 32px" data-options="prompt:'点击修改',label:'商品类别:'"></td>
+              <td style="width: 50%"><input id="pdate0" name="pdate0" class="easyui-textbox" data-options="prompt:'不可修改',label:'入库日期:'" readonly="readonly" style="width:100%;height:32px"/></td>
+            </tr>
+            <tr>
+              <td style="width: 50%"><input id="price" name="price" class="easyui-textbox" data-options="prompt:'商品价格',label:'商品价格'" iconCls="icon-add" iconAlign=left style="width:100%;height:32px"/></td>
+              <td style="width: 50%"><input id="star" name="star" class="easyui-combobox" data-options="prompt:'商品评级',label:'商品评级',panelHeight:115"  iconAlign=right style="width:100%;height:32px"/></td>
+            </tr>
+            <tr>
+            <td colspan="2"><input id="intro" name="intro" class="easyui-textbox" data-options="prompt:'说明',label:'说明:'" iconCls="icon-save" iconAlign=left style="width:100%;height:32px"/></td>
+            </tr>
+            <tr><td><input id="typeid" type="hidden"/></td><td></td></tr>
+              <tr><td colspan="2" style="text-align: center">
+                  <a onclick="submitForm()" class="easyui-linkbutton"  data-options="iconCls:'icon-ok'" style="width:50%;height:40px;background-color: lightgreen;">确认修改</a>
+              </td></tr>
+          </table>
+        
+        <div style="text-align:center;padding:5px; ">
+
+        </div>
+      </div>
+
+    <script type="text/javascript">
+    $(function(){
+    	$.post('AdminUpdetG',function(result){
+    		if(result!="失败"){
+    			$("#id").textbox({value:result.id});
+    			$("#pic").val(result.id);
+    			$("#name").textbox({value:result.name});
+    			
+    			$("#price").textbox({value:result.price});
+    			$('#star').combobox('setValue',result.star);
+                $("#number").textbox({value:result.number});
+    			$('#pdate0').textbox({value:result.gdate});
+    			$('#type0').combotree('setValue', {
+    				id: result.typeid,
+    				text: result.type
+    			});
+    			$("#status").combobox('setValue',result.status);
+    			$("#intro").textbox({value:result.intro});
+    			$("#typeid").val(result.typeid);
+    			$("#p1").attr("src",result.picture);
+    		}else{
+    			layer.alert(result);
+    		}
+    	});
+    });
+    $("#file").filebox({
+        buttonText:'点击修改图片',
+        buttonAlign:'left'
+
+    });
+    $("#star").combobox({
+		valueField: 'label',
+		textField: 'value',
+		limitToList:'true',
+		data: [{
+			label: '1',
+			value: '一'
+		},{
+			label: '2',
+			value: '二'
+		},{
+			label: '3',
+			value: '三'
+		},{
+			label: '4',
+			value: '四'
+		},{
+			label: '5',
+			value: '五'
+		}]
+});
+    $("#status").combobox({
+		valueField: 'label',
+		textField: 'value',
+		limitToList:'true',
+		data: [{
+			label: '0',
+			value: '下架'
+		},{
+			label: '1',
+			value: '上架'
+		}]
+});
+    $('#type0').combotree({    
+	    url:'AdminGUTreeServle' ,
+	    value:'选择类别',
+	    validateOnCreate: false,
+	    onBeforeSelect: function(node){
+	    	var r = $('#type0').tree('isLeaf',node.target);
+	    	if(!r){
+	    		layer.msg('请选择最终类别',{icon:4});
+	    	}else{
+	    		$("#type").textbox({value:node.text});
+	    		$("#typeid").val(node.id);
+	    	}
+	    	return r;
+	    }
+	}); 
+    
+    function fileUp() {
+        $('#from').form('submit',{
+            url:'/goodUpdate/fileUpload',
+            novalidate:'true',
+            onSubmit: function(data){
+                return true;
+            },
+            success:function(data){
+                if(data.length>0){
+                    layer.alert("添加成功");
+                    console.log(data);
+                    $("#p1").attr("src",data);
+                }else{
+                    layer.alert("添加失败");
+                }
+            }
+        });
+    }
+    //提交
+    function submitForm(){
+
+    	var id=$("#id").val();
+    	var number=$("#number").val();
+    	var name=$("#name").val();
+    	var price=$("#price").val();
+    	var star=$("#star").combobox('getValue');
+    	var typeid=$("#typeid").val();
+    	var intro=$("#intro").val();
+    	var status=$("#status").combobox('getValue');
+    	$.ajax({
+    		url:'AdGoodsUpd',
+    		type:'post',
+    		data:{
+    			'id':id,
+    			'name':name,
+                number:number,
+    			'price':price,
+    			'star':star,
+    			'typeid':typeid,
+    			'intro':intro,
+    			'status':status=='下架'?0:1
+    		},
+    		success:function(data){
+    			if(data==1){
+    				layer.alert("修改成功",{icon:6},function(index){
+    		    		layer.close(index);
+    		    		addTab("商品管理","AdminListGoods.html");
+    		    	});
+    			}else{
+    				layer.msg("修改失败",{icon:5});
+    			}
+    		}
+    	});
+    }
+    //点击查看大图
+    function Tum(img) {
+        var i=$($(img));
+        var src=i.attr("src");
+        var div='<div><img src="'+src+'" style="width:450px;height:450px"></div>';
+        layer.open({
+            type: 1,
+            title: false,
+            closeBtn: 0,
+            area: '450px',
+            skin: 'layui-layer-nobg', //没有背景色
+            shadeClose: true,
+            content:div
+        });
+    }
+    </script>
+</body>
+</html>

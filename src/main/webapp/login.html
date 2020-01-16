@@ -1,0 +1,145 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <!-- 引用的css -->
+  <link rel="stylesheet" href="js/jquery-easyui-1.5/themes/default/easyui.css">  
+  <link rel="stylesheet" href="js/jquery-easyui-1.5/themes/default/panel.css">  
+  <link rel="stylesheet" href="js/jquery-easyui-1.5/themes/icon.css"> 
+  <link rel="stylesheet" href="js/layer/skin/layer.css">
+  
+  <script type="text/javascript" src="js/jquery-easyui-1.5/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery-easyui-1.5/jquery.easyui.min.js"></script>
+  <script src="js/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
+  
+  <script src="js/layer/layer.js"></script>
+  <title>天天餐厅后台登录页面</title>
+  <style type="text/css">
+    body{
+      background: url('images/Tian2.jpg') no-repeat center;
+      background-size: cover;
+    }
+
+  .panel{
+  text-align:center;
+  }
+  .panel-title {
+    font-size: 22px;
+    height: 30px;
+    line-height: 30px;
+ 
+}
+    .title{
+      width: 80%;
+      height: 96px;
+      padding: 0 90px;
+      position: absolute;
+      top: 36%;
+      left: 0;
+      background: rgba(117,146,213,0.3);
+      color: #FFFFFF;
+      font-size: 48px;
+      line-height: 96px;
+    }
+    .english{
+      color: #A6969B;
+      font-size: 24px;
+      position: absolute;
+      top: 56%;
+      left: 0;
+      font-family: arial, sans-serif;
+      padding: 0 90px;
+    }
+  </style>
+</head>
+<body >
+<div class="title">天天美食餐厅</div>
+<i class="english">Tiantian Delicacy restaurant</i>
+  <div data-options=" region:'east',split:true,style:{position:'absolute',right:400,top:150}"
+ class="easyui-panel " title="天天餐厅后台登录" style="width:300px;text-align: center;">
+      <div style="padding:10px 40px 20px 40px">
+          <table cellpadding="5" style="width: 100%">
+            <tr>
+              <td><input id="username" name="username" class="easyui-textbox" data-options="prompt:'账号',validType:['length[2,16]']" iconCls="icon-man" iconAlign=left style="width:100%;height:32px" /></td>
+            </tr>
+            <tr>
+              <td><input id="password" name="password" class="easyui-passwordbox" data-options="prompt:'密码',validType:['password','length[3,16]']"  iconAlign=left style="width:100%;height:32px"/></td>
+            </tr>
+            <tr>
+              <td><img id="code" src="Code" alt="显示失败" width="105" height="32" align='absMiddle' title="点击刷新验证码"/>
+              <input id="incode" class="easyui-textbox" data-options="prompt:'验证码'" iconCls="icon-filter" iconAlign=left style="width:46%;height:32px"/></td>
+            </tr>
+          </table>
+        
+        <div style="text-align:center;padding:5px; ">
+          <a onclick="submitForm()" class="easyui-linkbutton"   style="width:96%;height:32px;background-color: lightgreen">登录</a>
+          
+        </div>
+      </div>
+    </div>
+</body>
+<script>
+
+	function submitForm(){
+		var username=$("#username").val();
+		  var password=$("#password").val();
+		  var incode=$("#incode").val();
+		  console.log("username="+username+"  password= "+password);
+		  if(username.length==0){
+			  layer.tips('账号不能为空', '#_easyui_textbox_input1', {
+                  tips: [2, '#FF5722']
+              });
+			  return false;
+		  }
+		  if(password.length==0){
+			  layer.tips('密码不能为空', '#_easyui_textbox_input3', {
+                  tips: [2, '#FF5722']
+              });
+			  return false;
+		  }
+		 if(incode.length==0){
+			 layer.tips('请填写验证码', '#_easyui_textbox_input2', {
+                 tips: [2, '#FF5722']
+             });
+			 return false;
+		 }
+	    	 $.ajax({
+	    		 url:'/adminer/loginn',
+	    		 data:{
+	    			 'username':username,
+	    			 'password':password,
+	    			 'incode':incode
+	    		 },
+	    		 type:'post',
+	    		 success:function(data){
+	    			 if(data==1){
+	    				 
+	    				  layer.msg('登录中', {
+	    					  icon: 16
+	    					  ,shade: 0.01
+	    					}); 
+	    				 location.href='AdminManager.html';
+	    			 }else if(data==2){
+	    				 $("#password").textbox("clear");
+	    				 layer.tips('账号/密码错误,请重新输入', '#_easyui_textbox_input1', {
+                             tips: [2, '#FF5722']
+                         });
+		
+	    			 }else{
+	    				 $("#incode").textbox("clear");
+	    				 layer.tips('验证码错误,请重新输入', '#_easyui_textbox_input2', {
+                             tips: [2, '#FF5722']
+                         });
+	    				 $("#code").attr('src','Code?'+Math.random());
+	    			 }
+	    		 }
+	    	 });
+	}
+
+ $(function(){
+	$("#code").click(function(){
+		$("#code").attr('src','Code?'+Math.random());
+	});
+}); 
+  
+</script>
+</html>

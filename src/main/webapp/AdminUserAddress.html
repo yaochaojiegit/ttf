@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户地址</title>
+</head>
+<body>
+<h1>地址列表</h1>
+<div id="toolbar">
+
+		<a id="btn1"  class="easyui-linkbutton" iconCls="icon-ok" onclick="UpGoods()">恢复地址</a>
+		<a id="btn2"  class="easyui-linkbutton" iconCls="icon-cut" onclick="DownGoods()">删除地址</a>
+		<a id="btn3"  class="easyui-linkbutton" iconCls="icon-edit" onclick="Submit()">修改地址</a>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	</div>
+
+<table id="table"></table>
+
+<script type="text/javascript">
+$(function(){
+	$('#table').datagrid({
+		url:'AdminUserAdressList', 
+		method: 'post',
+		//fit: true,
+		rownumbers: true,
+		pagination: true,
+		toolbar:'#toolbar',
+		columns:[[ 
+			{field:'ck',checkbox:true},
+			{field:'id',title:'编号',width:80,sortable:true},
+			{field:'name',title:'用户名',width:100},
+			{field:'phone',title:'手机号码',width:150},
+			{field:'uid',title:'用户编号',width:80},
+			{field:'level',title:'使用度',width:80,sortable:true},
+			{field:'detail',title:'详细地址',width:250},
+			{field:'status',title:'地址状态',width:80,formatter:function(value,row,index){
+				if(value==1){
+					return '正在使用';
+				}else{
+					return '已弃用';
+				}
+			}}
+			]]   
+
+	});
+	
+});
+function Submit(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中地址");
+		return;
+	}else if(ck.length>1){
+		layer.alert("一次只能修改一个");
+		return;
+	}
+	layer.confirm("你确定要修改这个地址吗？",{btn:["确定","取消"]},function(index){
+		var check=0;
+		$.each(ck,function(index,c){
+			check=c.id;
+		});
+		console.log("check="+check);
+		$.post("AdminUpd",{'che':check});
+		layer.close(index);
+		addTab("地址修改","AdminAddressUpd.html");
+	});
+}
+
+function UpGoods(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中地址");
+		return;
+	}
+	layer.confirm("你确定要恢复这些地址吗？",{btn:["确定","取消"]},function(index){
+		var check="";
+		$.each(ck,function(index,c){
+			var id=c.id;
+			check=check+id+",";
+		});
+		var uri='AdminAdressUp';
+		$.post(uri,{'check':check},function(result){
+			if(result==1){
+				$("#table").datagrid('reload');
+				layer.close(index);
+				layer.alert("恢复成功");
+			}else{
+				layer.close(index);
+				layer.alert("恢复失败");
+			}
+		});
+		
+	});
+}
+
+function DownGoods(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中地址");
+		return;
+	}
+	layer.confirm("你确定要删除这些地址吗？",{btn:["确定","取消"]},function(index){
+		var check="";
+		$.each(ck,function(index,c){
+			var id=c.id;
+			check=check+id+",";
+		});
+		var uri='AdminAdressDown';
+		$.post(uri,{'check':check},function(result){
+			if(result==1){
+				$("#table").datagrid('reload');
+				layer.close(index);
+				layer.alert("删除成功");
+			}else{
+				layer.close(index);
+				layer.alert("删除失败");
+			}
+		});
+		
+	});
+}
+
+</script>
+
+</body>
+</html>

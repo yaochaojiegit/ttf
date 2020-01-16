@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<link rel="stylesheet" href="/js/layer/skin/layer.css">
+  <link rel="stylesheet" href="/js/layer/layui.css">
+<script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/layer/layer.js"></script>
+  <script src="/js/layer/layui.js"></script>
+
+</head>
+<body>
+<h1>你好</h1>
+<form action="uuuu">
+<input id="sort" name="sort">
+<span id="sp"></span>
+
+
+
+<input type="button" value="提交" onclick="ch()" />
+
+</form>
+<div>
+<img id="p" alt="tushu" src=""  style="width: 200px;height: 200px;">
+</div>
+<div id="layer-photos-demo" class="layer-photos-demo">
+  <img id="p1" layer-pid="p1" layer-src="" src="" alt="图片名" style="width: 100%;height: 62%;">
+  <img id="p2" layer-pid="p2" layer-src="" src="\pic\tm.jpg" alt="图片名" style="width: 200px;height: 200px;">
+</div>
+<script type="text/javascript">
+function ch(){
+	var sort=$("#sort").val();
+	$.post('uuuu',{'id':sort},function(data){
+	console.log(data.picture);
+	$("#p").attr("src",data.picture);
+	$("#p1").attr("src",data.picture);
+	$("#p2").attr("src",data.picture);
+	$("#p2").attr("layer-src",data.picture);
+	$("#sp").text("你好").css("color","red");
+	});
+	
+	
+}
+layer.photos({
+	  photos: '#layer-photos-demo'
+	  ,anim: 6 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+	}); 
+</script>
+</body>
+</html>

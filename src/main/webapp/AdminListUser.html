@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>用户管理</title>
+</head>
+<body>
+<h1>用户列表</h1>
+<div id="toolbar">
+	<div >
+		<input id="title" name="title" type="text" class="easyui-textbox" data-options="prompt:'搜索'">
+		<label for="species">选择类别</label>
+		<select id="species" name="species" class="easyui-combobox" data-options="panelHeight:48">
+			<option value="id">ID</option>
+			<option value="username">用户名</option>
+		</select>
+		<select id="species2" name="species2" class="easyui-combobox" data-options="panelHeight:96">
+			<option value="3">全部用户</option>
+			<option value="2">注销用户</option>
+			<option value="1">激活用户</option>
+			<option value="0">注册用户</option>
+		</select>
+		<a id="search" class="easyui-linkbutton" iconCls="icon-search" onclick="searc()">点击搜索</a>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a id="btn"    class="easyui-linkbutton" iconCls="icon-edit"   onclick="Submit()">查看/编辑用户</a>
+		<a id="bt1"    class="easyui-linkbutton" iconCls="icon-ok"     onclick="resCource()">恢复用户</a>
+		<a id="btn1"   class="easyui-linkbutton" iconCls="icon-cut"    onclick="delCource()">注销用户</a>
+		<a id="btn2"   class="easyui-linkbutton" iconCls="icon-add"    onclick="address()">添加地址</a>
+		<a id="btn0"   class="easyui-linkbutton" iconCls="icon-edit"   onclick="addressCheck()">查看用户地址</a>
+		<a id="recharge"   class="easyui-linkbutton" iconCls="icon-edit"   onclick="recharge()">充值</a>
+		<a id="refund"   class="easyui-linkbutton" iconCls="icon-edit"   onclick="refund()">退款</a>
+		<a  class="easyui-linkbutton" iconCls="icon-edit"   onclick="checkHistory()">查看账户记录</a>
+	</div>
+</div>
+<table id="table"></table>
+<div id="history">
+</div>
+<script type="text/javascript">
+$(function(){
+	$('#table').datagrid({
+		url:'userList', 
+		method: 'post',
+		//fit: true,
+		rownumbers: true,
+		pagination: true,
+		toolbar:'#toolbar',
+		columns:[[ 
+			{field:'ck',checkbox:true},
+			{field:'id',title:'编号',width:100,sortable:true},
+			{field:'username',title:'用户名',width:150},
+			{field:'password',title:'密码',width:200},
+            {field:'balance',title:'账户余额(元)',width:100},
+			{field:'email',title:'email',width:200},
+			{field:'gender',title:'性别',width:150},
+			{field:'flag',title:'状态',width:100,sortable:true,formatter:function(value,row,index){
+				if(value==1){
+					return "已激活";
+				}else if(value==0){
+					return "未激活";
+				}else{
+					return "已注销";
+				}
+			}},
+			{field:'role',title:'会员',width:100,sortable:true,formatter:function(value,row,index){
+				if(value==0){
+					return "大众会员";
+				}else{
+					return "钻石会员";
+				}
+			}}
+	    ]]   
+
+	});
+	
+});
+
+
+function Submit(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中用户");
+		return;
+	}else if(ck.length>1){
+		layer.alert("一次只能修改一位");
+		return;
+	}
+	layer.confirm("你确定要修改这位用户吗？",{btn:["确定","取消"]},function(index){
+		var check=0;
+		$.each(ck,function(index,c){
+			check=c.id;
+		});
+		layer.close(index);
+		$.post('idAdd',{
+			'check':check
+		});
+		addTab("修改用户",'AdminUserUpd.html');
+	});
+}
+function address(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中用户");
+		return;
+	}else if(ck.length>1){
+		layer.alert("一次只能选中一位");
+		return;
+	}
+	layer.confirm("你确定要为这位用户添加地址吗？",{btn:["确定","取消"]},function(index){
+		var check=0;
+		$.each(ck,function(index,c){
+			check=c.id;
+		});
+		layer.close(index);
+		$.post('idAdd',{
+			'check':check
+		});
+		addTab("用户地址添加",'AdminAddressAdd.html');
+	});
+}
+
+function addressCheck(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中用户");
+		return;
+	}else if(ck.length>1){
+		layer.alert("一次只能选中一位");
+		return;
+	}
+	layer.confirm("你确定要查看该用户的所有收货地址吗？",{btn:["确定","取消"]},function(index){
+		var check=0;
+		$.each(ck,function(index,c){
+			check=c.id;
+		});
+		layer.close(index);
+		$.post('idAdd',{
+			'check':check
+		});
+		addTab("查看用户地址",'AdminUserAddress.html');
+	});
+}
+
+function resCource(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中用户");
+		return;
+	}
+	layer.confirm("你确定要恢复这些用户吗？",{btn:["确定","取消"]},function(index){
+		var check="";
+		$.each(ck,function(index,c){
+			var id=c.id;
+			check=check+id+",";
+		});
+		var uri='userUp';
+		$.post(uri,{'check':check},function(result){
+			if(result==1){
+				$("#table").datagrid('reload');
+				layer.close(index);
+				layer.alert("恢复成功");
+			}else{
+				layer.close(index);
+				layer.alert("恢复失败");
+			}
+		});
+		
+	});
+}
+function delCource(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中用户");
+		return;
+	}
+	layer.confirm("你确定要注销这些用户吗？",{btn:["确定","取消"]},function(index){
+		var check="";
+		$.each(ck,function(index,c){
+			var id=c.id;
+			check=check+id+",";
+		});
+		var uri='userDown';
+		$.post(uri,{'check':check},function(result){
+			if(result==1){
+				$("#table").datagrid('reload');
+				layer.close(index);
+				layer.alert("注销成功");
+			}else{
+				layer.close(index);
+				layer.alert("注销失败");
+			}
+		});
+		
+	});
+}
+
+function searc(){
+	$("#table").datagrid("load",{
+		title:$("#title").val(),
+		species:$("#species").combobox('getValue'),
+		species2:$("#species2").combobox('getValue')
+	});
+}
+
+//充值
+	function recharge() {
+        var ck=$("#table").datagrid("getSelections");
+        if(ck.length==0){
+            layer.alert("请选中用户");
+            return;
+        }
+        if(ck.length>1){
+            layer.alert("一次只能为以为用户充值");
+            return;
+		}
+        layer.prompt({title: '请输入充值金额,并确认', formType: 3}, function(text, index){
+            var id=0;
+            $.each(ck,function (index,item) {
+				id=item.id;
+            });
+            var uri="/updateRecharge";
+            $.post(uri,{id:id,balance:text,type:1},function (result) {
+                if(result.code==1){
+                    layer.msg("充值成功"+result.msg,{icon:1});
+				}else {
+                    layer.msg("充值失败"+result.msg,{icon:5});
+				}
+                $("#table").datagrid('reload');
+            });
+            layer.close(index);
+            
+        });
+
+    }
+    
+    //退款
+	function refund() {
+        var ck=$("#table").datagrid("getSelections");
+        if(ck.length==0){
+            layer.alert("请选中用户");
+            return;
+        }
+        if(ck.length>1){
+            layer.alert("一次只能为一位用户办理退款");
+            return;
+        }
+        layer.confirm("你确定为这位用户退款吗？",{btn:["确定","取消"]},function(index){
+            var id=0;
+            $.each(ck,function(index,c){
+                 id=c.id;
+            });
+            var uri='/updateRecharge';
+            $.post(uri,{id:id,balance:0,type:0},function(result){
+                if(result.code==1){
+                    $("#table").datagrid('reload');
+                    layer.close(index);
+                    layer.alert("退款成功"+result.msg,{icon:1});
+                }else{
+                    layer.close(index);
+                    layer.alert("退款失败"+result.msg,{icon:5});
+                }
+            });
+        });
+    }
+
+
+    function checkHistory() {
+        var ck=$("#table").datagrid("getSelections");
+        if(ck.length==0){
+            layer.alert("请选中用户");
+            return;
+        }
+        if(ck.length>1){
+            layer.alert("一次只能查询一位用户");
+            return;
+        }
+        var id=0;
+        $.each(ck,function (index,item) {
+            id=item.id;
+        });
+		var uri="/balanceHistory/selectById";
+		$.post(uri,{id:id},function (result) {
+			var data=result.rows;
+			if (data!=null&&data.length>0){
+			    $("#history").empty();
+
+			    var hi="<table>\n" +
+                    "\t\t<tr>\n" +
+                    "\t\t\t<td style=\"width: 15%\">操作</td>\n" +
+                    "\t\t\t<td style=\"width: 20%\">金额(元)</td>\n" +
+                    "\t\t\t<td style=\"width: 40%\">账户变化</td>\n" +
+                    "\t\t\t<td style=\"width: 25%\">时间</td>\n" +
+                    "\t\t</tr>\n" ;
+			    $.each(data,function (index,item) {
+			        var da=item.datime;
+			        var typeName="";
+			        if(item.type==0) {
+                         typeName = "退款";
+                    }else if(item.type==1){
+			              typeName = "充值";
+					}else if(item.type==2){
+			            typeName="消费";
+					}
+                    hi=hi+ "\t\t<tr>\n" +
+                        "\t\t\t<td>"+typeName+"</td>\n" +
+                        "\t\t\t<td>"+item.money+"</td>\n" +
+                        "\t\t\t<td>账户余额从"+item.beforeBalance+"元变为"+item.afterBalance+"元</td>\n" +
+                        "\t\t\t<td>"+da.substring(0,da.length-2)+"</td>\n" +
+                        "\t\t</tr>\n" ;
+                });
+                   hi=hi+ "\t</table>";
+                   $("#history").append(hi);
+			} else {
+			    $("#history").empty();
+			    $("#history").html("查询失败");
+			}
+        });
+    }
+</script>
+</body>
+</html>

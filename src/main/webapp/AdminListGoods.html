@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>商品管理</title>
+</head>
+<body>
+<h1>商品列表</h1>
+<div id="toolbar">
+		<input id="title" name="title" type="text" class="easyui-textbox" data-options="prompt:'输入搜索'">
+		<label for="species">选择类别</label>
+		<select id="species" name="species" class="easyui-combobox">
+			<option value="id">编号</option>
+			<option value="name">商品名称</option>
+			<option value="typeid">商品类别</option>
+		</select>
+		<label for="species">是否上架</label>
+		<select id="species2" name="species2" class="easyui-combobox">
+			<option value="2">全部</option>
+			<option value="1">上架</option>
+			<option value="0">下架</option>
+			
+		</select>
+		<a id="search" class="easyui-linkbutton"  iconCls="icon-search" onclick="searc()">点击搜索</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a id="btn1"  class="easyui-linkbutton" iconCls="icon-ok" onclick="UpGoods()">上架商品</a>
+		<a id="btn2"  class="easyui-linkbutton" iconCls="icon-cut" onclick="DownGoods()">下架商品</a>
+		<a id="btn3"  class="easyui-linkbutton" iconCls="icon-edit" onclick="Submit()">修改商品</a>
+	<!-- 	<a id="btn1" class="easyui-linkbutton" iconCls="icon-cut" onclick="delCource()">删除商品</a> -->
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	</div>
+
+<table id="table"></table>
+
+<script type="text/javascript">
+$(function(){
+	$('#table').datagrid({
+		url:'AdminListGoodsServlet', 
+		method: 'post',
+		//fit: true,
+		rownumbers: true,
+		pagination: true,
+		toolbar:'#toolbar',
+		columns:[[ 
+			{field:'ck',checkbox:true},
+			{field:'id',title:'编号',width:100,sortable:true},
+			{field:'name',title:'商品名称',width:130},
+            {field:'number',title:'商品数量',width:80},
+			{field:'gdate',title:'生产日期',width:150},
+			{field:'picture',title:'商品图片',width:230},
+			{field:'price',title:'商品价格',width:80,sortable:true},
+			{field:'star',title:'商品评分',width:80,sortable:true},
+			{field:'type',title:'商品类别',width:100},
+			{field:'intro',title:'商品描述',width:250},
+			{field:'status',title:'商品状态',width:100,formatter:function(value,row,index){
+				if(value==1){
+					return '上架';
+				}else{
+					return '下架';
+				}
+			}}
+			]]
+
+	});
+	
+});
+function Submit(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中商品");
+		return;
+	}else if(ck.length>1){
+		layer.alert("一次只能修改一个");
+		return;
+	}
+	layer.confirm("你确定要修改这位商品吗？",{btn:["确定","取消"]},function(index){
+		var check=0;
+		$.each(ck,function(index,c){
+			check=c.id;
+		});
+		console.log("check="+check);
+		$.post("GoodUpd",{'chec':check});
+		layer.close(index);
+		addTab("商品修改","AdminGoodsUpd.html");
+	});
+}
+
+function UpGoods(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中商品");
+		return;
+	}
+	layer.confirm("你确定要上架这些商品吗？",{btn:["确定","取消"]},function(index){
+		var check="";
+		$.each(ck,function(index,c){
+			var id=c.id;
+			check=check+id+",";
+		});
+		console.log("check="+check);
+		var uri='AdminUpGoods';
+		$.post(uri,{'check':check},function(result){
+			if(result==1){
+				$("#table").datagrid('reload');
+				layer.close(index);
+				layer.msg("上架成功",{icon:1});
+			}else{
+				layer.close(index);
+				layer.msg("上架失败",{icon:2});
+			}
+		});
+		
+	});
+}
+
+function DownGoods(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中商品");
+		return;
+	}
+	layer.confirm("你确定要下架这些商品吗？",{btn:["确定","取消"]},function(index){
+		var check="";
+		$.each(ck,function(index,c){
+			var id=c.id;
+			check=check+id+",";
+		});
+		console.log("check="+check);
+		var uri='AdminDownGoods';
+		$.post(uri,{'check':check},function(result){
+			if(result==1){
+				$("#table").datagrid('reload');
+				layer.close(index);
+				layer.msg("下架成功",{icon:1});
+			}else{
+				layer.close(index);
+				layer.msg("下架失败",{icon:2});
+			}
+		});
+		
+	});
+}
+
+function searc(){
+	$("#table").datagrid("load",{
+		title:$("#title").val(),
+		species:$("#species").combobox('getValue'),
+		species2:$("#species2").combobox('getValue')
+	});
+}
+</script>
+
+</body>
+</html>

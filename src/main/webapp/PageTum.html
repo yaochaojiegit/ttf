@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跳转页面</title>
+    <link rel="stylesheet" type="text/css" href="/js/Tum/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/js/Tum/css/htmleaf-demo.css">
+    <link rel="stylesheet" href="/js/Tum/css/style.css">
+    <link rel="stylesheet" href="/js/layer/css/layui.css">
+</head>
+<body onload="Tum()">
+<div class="satic-area">
+    <header class="htmleaf-header">
+        <h1>天天美食餐厅<span>欢迎你成为天天美食餐厅的会员</span></h1>
+        <div class="htmleaf-links">
+            <a class="htmleaf-icon icon-htmleaf-home-outline" href="UserLogin.html" title="手动跳转登录" target="_blank"><span>登录页面</span></a>
+            <a class="htmleaf-icon icon-htmleaf-arrow-forward-outline" href="register.html" title="返回注册页" target="_blank"><span> 返回注册页</span></a>
+        </div>
+        <div id="div1" style="font-size: 40px">
+
+        </div>
+    </header>
+    <div class="dynamic-area1"></div>
+    <div class="dynamic-area2"></div>
+</div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/layer/layui.js"></script>
+<script>
+    var time=7;
+    function Tum() {
+        if (!(time>1)){
+            location.href="UserLogin.html";
+        }
+        time--;
+        $("#div1").html("账号激活成功,"+time+"秒后发生跳转");
+    }
+setInterval("Tum()",1000);
+</script>
+</body>
+</html>

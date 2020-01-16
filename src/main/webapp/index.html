@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>天天餐厅</title>
+	<link rel="stylesheet" type="text/css" href="/js/shop/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/js/shop/css/default.css">
+	<link rel="stylesheet" type="text/css" href="/js/shop/css/styles.css">
+    <link rel="stylesheet" href="/js/layer/css/layui.css">
+</head>
+<body>
+	<div id="wrapper">
+<div class="cart-icon-top">
+</div>
+
+<div class="cart-icon-bottom">
+</div>
+
+<div id="checkout">
+	<a onclick="pay()">去支付</a>
+</div>
+
+<div id="info">
+    <h2>天天美食餐厅</h2>
+	<!--<p class="i1">天天餐厅</p>-->
+</div>
+
+<div id="header">	
+	<ul>
+        <li id="user" ></li>
+        <li>
+            <button class="layui-btn layui-btn-radius" onclick="location.href='index.html'"><i class="layui-icon">&#xe68e;</i>餐厅主页</button>
+        </li>
+        <li>
+            <button class="layui-btn layui-btn-radius layui-btn-normal" onclick="geRenOn()"><i class="layui-icon">&#xe612;</i>个人信息</button>
+        </li>
+        <li>
+            <button class="layui-btn layui-btn-radius layui-btn-warm" onclick="orderList()"><i class="layui-icon">&#xe63c;</i>我的订单</button>
+        </li>
+        <li>
+            <button class="layui-btn layui-btn-radius layui-btn-danger" onclick="qr()"><i class="layui-icon">&#xe63b;</i>官方二维码</button>
+        </li>
+
+    </ul>		
+</div>
+
+<div id="sidebar">
+	<h3>购物车</h3>
+    <div id="cart">
+    	<span class="empty">购物车是空的</span>
+    </div>
+    <div>
+
+    </div>
+    
+    <h3>菜品种类</h3>
+    <div class="checklist colors">
+    	<ul>
+        	<li><a ><span></span>全部</a></li>
+            <li><a ><span style="background:#222"></span>主食</a></li>
+            <li><a ><span style="background:#6e8cd5"></span>菜品</a></li>
+            <li><a  ><span style="background:#f56060"></span>饮品</a></li>
+            <li><a href=""><span style="background:#44c28d"></span>其他</a></li>
+        </ul>
+        
+        <ul>
+        	<li><a href=""><span style="background:#999"></span>销量最多</a></li>
+            <li><a href=""><span style="background:#f79858"></span>店长推荐</a></li>
+            <li><a href=""><span style="background:#b27ef8"></span>本月优惠</a></li>
+            <li><a href=""><span style="background:#f56060"></span>买一送一</a></li>
+            <li><a href=""><span style="background:#fff;border: 1px solid #e8e9eb;width:13px;height:13px;"></span>优惠区</a></li>
+        </ul>        
+    </div>
+
+</div>
+
+<!--<div id="grid-selector">
+       &lt;!&ndash;<div id="grid-menu">
+       	   View:
+           <ul>           	   
+               <li class="largeGrid"><a href=""></a></li>
+               <li class="smallGrid"><a class="active" href=""></a></li>
+           </ul>
+       </div>&ndash;&gt;
+</div>-->
+
+<div id="grid">
+    <div class="product">
+    	<div class="info-large">
+        	<h4>今日特卖</h4>
+            <div class="sku">
+            	PRODUCT SKU: <strong>89356</strong>
+            </div>
+             
+            <div class="price-big">
+            	<span>$43</span> $39
+            </div>
+             
+            <h3>评级</h3>
+            <div class="colors-large"  id="star00">
+                <ul>
+                    <li><a href="" style="background:#222"><span></span></a></li>
+                    <li><a href="" style="background:#6e8cd5"><span></span></a></li>
+                    <li><a href="" style="background:#f56060"><span></span></a></li>
+                    <li><a href="" style="background:#44c28d"><span></span></a></li>
+                </ul>
+            </div>
+
+            <h3>简介</h3>
+            <div class="sizes-large">
+                <span id="intro00"></span>
+            </div>
+            
+            <button class="add-cart-large">添加到购物车</button>
+                         
+        </div>
+        <div class="make3D">
+            <div class="product-front">
+                <div class="shadow"></div>
+                <img src="" alt="图片找不到" id="img0"/>
+                <div class="image_overlay"></div>
+                <div class="add_to_cart">添加到购物车</div>
+                <div class="stats">        	
+                    <div class="stats-container">
+                        <span class="product_id" id="id0" style="display: none" ></span><br/>
+                        <span class="product_price" id="price0" ></span>
+                        <span class="product_name" id="good0"></span>
+
+                        <div class="product-options">
+                        <strong>简介</strong>
+                        <span id="intro0"></span>
+                        <strong>评级</strong>
+                        <div  id="star0">
+                        </div>
+                    </div>                       
+                    </div>                         
+                </div>
+            </div>
+        </div>	
+    </div>
+    <div class="product">
+        <div class="info-large">
+            <h4>今日特卖</h4>
+            <div class="sku">
+                PRODUCT SKU: <strong>89356</strong>
+            </div>
+
+            <div class="price-big">
+                <span>$43</span> $39
+            </div>
+
+            <h3>评级</h3>
+            <div class="colors-large"  id="star11">
+                <ul>
+                    <li><a href="" style="background:#222"><span></span></a></li>
+                    <li><a href="" style="background:#6e8cd5"><span></span></a></li>
+                    <li><a href="" style="background:#f56060"><span></span></a></li>
+                    <li><a href="" style="background:#44c28d"><span></span></a></li>
+                </ul>
+            </div>
+
+            <h3>简介</h3>
+            <div class="sizes-large">
+                <span id="intro11"></span>
+            </div>
+
+            <button class="add-cart-large">添加到购物车</button>
+
+        </div>
+        <div class="make3D">
+            <div class="product-front">
+                <div class="shadow"></div>
+                <img src="" alt="图片找不到" id="img1"/>
+                <div class="image_overlay"></div>
+                <div class="add_to_cart">添加到购物车</div>
+                <div class="stats">
+                    <div class="stats-container">
+                        <span class="product_id" id="id1" style="display: none" ></span><br/>
+                        <span class="product_price" id="price1"></span>
+                        <span class="product_name" id="good1"></span>
+
+                        <div class="product-options">
+                            <strong>简介</strong>
+                            <span id="intro1"></span>
+                            <strong>评级</strong>
+                            <div class="colors" id="star1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="product">
+        <div class="info-large">
+            <h4>今日特卖</h4>
+            <div class="sku">
+                PRODUCT SKU: <strong>89356</strong>
+            </div>
+
+            <div class="price-big">
+                <span>$43</span> $39
+            </div>
+
+            <h3>评级</h3>
+            <div class="colors-large"  id="star22">
+                <ul>
+                    <li><a href="" style="background:#222"><span></span></a></li>
+                    <li><a href="" style="background:#6e8cd5"><span></span></a></li>
+                    <li><a href="" style="background:#f56060"><span></span></a></li>
+                    <li><a href="" style="background:#44c28d"><span></span></a></li>
+                </ul>
+            </div>
+
+            <h3>简介</h3>
+            <div class="sizes-large">
+                <span id="intro22"></span>
+            </div>
+
+            <button class="add-cart-large">添加到购物车</button>
+
+        </div>
+        <div class="make3D">
+            <div class="product-front">
+                <div class="shadow"></div>
+                <img src="" alt="图片找不到" id="img2"/>
+                <div class="image_overlay"></div>
+                <div class="add_to_cart">添加到购物车</div>
+                <div class="stats">
+                    <div class="stats-container">
+                        <span class="product_id" id="id2" style="display: none" ></span><br/>
+                        <span class="product_price" id="price2"></span>
+                        <span class="product_name" id="good2"></span>
+
+                        <div class="product-options">
+                            <strong>简介</strong>
+                            <span id="intro2"></span>
+                            <strong>评级</strong>
+                            <div class="colors" id="star2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="product">
+        <div class="info-large">
+            <h4>今日特卖</h4>
+            <div class="sku">
+                PRODUCT SKU: <strong>89356</strong>
+            </div>
+
+            <div class="price-big">
+                <span>$43</span> $39
+            </div>
+
+            <h3>评级</h3>
+            <div class="colors-large"  id="star33">
+                <ul>
+                    <li><a href="" style="background:#222"><span></span></a></li>
+                    <li><a href="" style="background:#6e8cd5"><span></span></a></li>
+                    <li><a href="" style="background:#f56060"><span></span></a></li>
+                    <li><a href="" style="background:#44c28d"><span></span></a></li>
+                </ul>
+            </div>
+
+            <h3>简介</h3>
+            <div class="sizes-large">
+                <span id="intro33"></span>
+            </div>
+
+            <button class="add-cart-large">添加到购物车</button>
+
+        </div>
+        <div class="make3D">
+            <div class="product-front">
+                <div class="shadow"></div>
+                <img src="" alt="图片找不到" id="img3"/>
+                <div class="image_overlay"></div>
+                <div class="add_to_cart">添加到购物车</div>
+                <div class="stats">
+                    <div class="stats-container">
+                        <span class="product_id" id="id3" style="display: none" ></span><br/>
+                        <span class="product_price" id="price3"></span>
+                        <span class="product_name" id="good3"></span>
+
+                        <div class="product-options">
+                            <strong>简介</strong>
+                            <span id="intro3"></span>
+                            <strong>评级</strong>
+                            <div class="colors" id="star3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="product">
+        <div class="info-large">
+            <h4>今日特卖</h4>
+            <div class="sku">
+                PRODUCT SKU: <strong>89356</strong>
+            </div>
+
+            <div class="price-big">
+                <span>$43</span> $39
+            </div>
+
+            <h3>评级</h3>
+            <div class="colors-large"  id="star44">
+                <ul>
+                    <li><a href="" style="background:#222"><span></span></a></li>
+                    <li><a href="" style="background:#6e8cd5"><span></span></a></li>
+                    <li><a href="" style="background:#f56060"><span></span></a></li>
+                    <li><a href="" style="background:#44c28d"><span></span></a></li>
+                </ul>
+            </div>
+
+            <h3>简介</h3>
+            <div class="sizes-large">
+                <span id="intro44"></span>
+            </div>
+
+            <button class="add-cart-large">添加到购物车</button>
+
+        </div>
+        <div class="make3D">
+            <div class="product-front">
+                <div class="shadow"></div>
+                <img src="" alt="图片找不到" id="img4"/>
+                <div class="image_overlay"></div>
+                <div class="add_to_cart">添加到购物车</div>
+                <div class="stats">
+                    <div class="stats-container">
+                        <span class="product_id" id="id4" style="display: none" ></span><br/>
+                        <span class="product_price" id="price4"></span>
+                        <span class="product_name" id="good4"></span>
+
+                        <div class="product-options">
+                            <strong>简介</strong>
+                            <span id="intro4"></span>
+                            <strong>评级</strong>
+                            <div class="colors" id="star4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="product">
+        <div class="info-large">
+            <h4>今日特卖</h4>
+            <div class="sku">
+                PRODUCT SKU: <strong>89356</strong>
+            </div>
+
+            <div class="price-big">
+                <span>$43</span> $39
+            </div>
+
+            <h3>评级</h3>
+            <div class="colors-large"  id="star55">
+                <ul>
+                    <li><a href="" style="background:#222"><span></span></a></li>
+                    <li><a href="" style="background:#6e8cd5"><span></span></a></li>
+                    <li><a href="" style="background:#f56060"><span></span></a></li>
+                    <li><a href="" style="background:#44c28d"><span></span></a></li>
+                </ul>
+            </div>
+
+            <h3>简介</h3>
+            <div class="sizes-large">
+                <span id="intro55"></span>
+            </div>
+
+            <button class="add-cart-large">添加到购物车</button>
+
+        </div>
+        <div class="make3D">
+            <div class="product-front">
+                <div class="shadow"></div>
+                <img src="" alt="图片找不到" id="img5"/>
+                <div class="image_overlay"></div>
+                <div class="add_to_cart">添加到购物车</div>
+                <div class="stats">
+                    <div class="stats-container">
+                        <span class="product_id" id="id5" style="display: none" ></span><br/>
+                        <span class="product_price" id="price5"></span>
+                        <span class="product_name" id="good5"></span>
+
+                        <div class="product-options">
+                            <strong>简介</strong>
+                            <span id="intro5"></span>
+                            <strong>评级</strong>
+                            <div class="colors" id="star5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="product">
+        <div class="info-large">
+            <h4>今日特卖</h4>
+            <div class="sku">
+                PRODUCT SKU: <strong>89356</strong>
+            </div>
+
+            <div class="price-big">
+                <span>$43</span> $39
+            </div>
+
+            <h3>评级</h3>
+            <div class="colors-large"  id="star66">
+                <ul>
+                    <li><a href="" style="background:#222"><span></span></a></li>
+                    <li><a href="" style="background:#6e8cd5"><span></span></a></li>
+                    <li><a href="" style="background:#f56060"><span></span></a></li>
+                    <li><a href="" style="background:#44c28d"><span></span></a></li>
+                </ul>
+            </div>
+
+            <h3>简介</h3>
+            <div class="sizes-large">
+                <span id="intro66"></span>
+            </div>
+
+            <button class="add-cart-large">添加到购物车</button>
+
+        </div>
+        <div class="make3D">
+            <div class="product-front">
+                <div class="shadow"></div>
+                <img src="" alt="图片找不到" id="img6"/>
+                <div class="image_overlay"></div>
+                <div class="add_to_cart">添加到购物车</div>
+                <div class="stats">
+                    <div class="stats-container">
+                        <span class="product_id" id="id6" style="display: none" ></span><br/>
+                        <span class="product_price" id="price6"></span>
+                        <span class="product_name" id="good6"></span>
+
+                        <div class="product-options">
+                            <strong>简介</strong>
+                            <span id="intro6"></span>
+                            <strong>评级</strong>
+                            <div class="colors" id="star6">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="product">
+        <div class="info-large">
+            <h4>今日特卖</h4>
+            <div class="sku">
+                PRODUCT SKU: <strong>89356</strong>
+            </div>
+
+            <div class="price-big">
+                <span>$43</span> $39
+            </div>
+
+            <h3>评级</h3>
+            <div class="colors-large"  id="star77">
+                <ul>
+                    <li><a href="" style="background:#222"><span></span></a></li>
+                    <li><a href="" style="background:#6e8cd5"><span></span></a></li>
+                    <li><a href="" style="background:#f56060"><span></span></a></li>
+                    <li><a href="" style="background:#44c28d"><span></span></a></li>
+                </ul>
+            </div>
+
+            <h3>简介</h3>
+            <div class="sizes-large">
+                <span id="intro77"></span>
+            </div>
+
+            <button class="add-cart-large">添加到购物车</button>
+
+        </div>
+        <div class="make3D">
+            <div class="product-front">
+                <div class="shadow"></div>
+                <img src="" alt="图片找不到" id="img7"/>
+                <div class="image_overlay"></div>
+                <div class="add_to_cart">添加到购物车</div>
+                <div class="stats">
+                    <div class="stats-container">
+                        <span class="product_id" id="id7" style="display: none" ></span><br/>
+                        <span class="product_price" id="price7"></span>
+                        <span class="product_name" id="good7"></span>
+
+                        <div class="product-options">
+                            <strong>简介</strong>
+                            <span id="intro7"></span>
+                            <strong>评级</strong>
+                            <div class="colors" id="star7">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+    <div><input type="hidden" id="count"></div>
+    <div id="demo6"></div>
+	
+	<script src="/js/shop/js/jquery-2.1.1.min.js"></script>
+	<script src='/js/shop/js/stopExecutionOnTimeout.js?t=1'></script>
+	<script type="text/javascript" src="/js/shop/js/main.js"></script>
+    <script src="/js/layer/layui.js" charset="utf-8"></script>
+    <script src="/js/shop/js/index.js"></script>
+    <script src="/js/qrCode/qrcode.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户添加地址</title>
+
+</head>
+<body style="width: 1127px;">
+<div data-options=" region:'east',split:true,style:{position:'absolute',right:300,top:100}"
+ class="easyui-panel " title="添加地址" style="width:550px;text-align:center;">
+ <form id="from0" action="AdminAdressAdd" method="post"> 
+      <div style="padding:10px 60px 20px 60px">
+      
+          <table cellpadding="5">
+            <tr>
+              <td style="width: 50%"><input id="uid" name="uid" class="easyui-textbox" data-options="prompt:'用户编号',label:'用户编号:'" iconCls="icon-save" iconAlign=left style="width:100%;height:32px" readonly="readonly"/></td>
+              <td style="width: 50%"><input id="name" name="name" class="easyui-textbox" data-options="prompt:'用户名称',label:'用户名称:',validType:{length:[2,16]}" iconCls="icon-save" iconAlign=left style="width:100%;height:32px"/></td>
+              
+            </tr>
+            
+            <tr>
+              <td style="width: 50%"><input id="phone" name="phone" class="easyui-textbox" data-options="prompt:'用户手机',label:'手机号码'" iconCls="icon-add" iconAlign=left style="width:100%;height:32px"/></td>
+              <td style="width: 50%"><input id="level" name="level" class="easyui-combobox" data-options="prompt:'地址等级',label:'使用等级'" style="width:100%;height:32px"/></td>
+	
+            </tr>
+            <tr>
+              <td style="width: 50%"><input id="province" name="province" class="easyui-textbox" data-options="prompt:'点击选择->',label:'省份:'"  iconAlign=right style="width:100%;height:32px"/></td>
+              <td style="width: 50%"><input id='pro' name='pro'  data-options="prompt:'点击选择->',label:'省份:'" style="width:100%;height:32px" /></td>
+         
+            </tr>
+           <tr>
+              <td style="width: 50%"><input id="city" name="city" class="easyui-textbox" data-options="prompt:'点击选择->',label:'市:'"  iconAlign=right style="width:100%;height:32px"/></td>
+              <td style="width: 50%"><input id='cit' name='cit' class="easyui-combobox" data-options="prompt:'点击选择->',label:'市:'"  style="width:100%;height:32px"/></td>
+         
+            </tr>
+            <tr>
+              <td style="width: 50%"><input id="county" name="county" class="easyui-textbox" data-options="prompt:'点击选择->',label:'县:'"  iconAlign=right style="width:100%;height:32px"/></td>
+              <td style="width: 50%"><input id='cou' name='cou' class="easyui-combobox" data-options="prompt:'点击选择->',label:'县:'" style="width:100%;height:32px"/></td>
+         
+            </tr>
+            <tr>
+            <td colspan="2"><input id="detail" name="detail" class="easyui-textbox" data-options="prompt:'街道与门牌号码',label:'详细地址:'" iconCls="icon-save" iconAlign=left style="width:100%;height:32px"/></td>
+            </tr>
+            <tr><td><input id="typeid" type="hidden"/></td><td></td></tr>
+          </table>
+        
+        <div style="text-align:center;padding:5px; ">
+     
+          <a onclick="submitForm()" class="easyui-linkbutton"  data-options="iconCls:'icon-ok'" style="width:60%;height:40px;background-color: lightgreen;">确认添加</a>  
+       </div>
+      </div>
+      </form>
+    </div>
+    <script type="text/javascript" charset="UTF-8">
+    $(function(){
+    	$.post('AdminUAA',function(data){
+    		console.log("data"+data);
+    		$("#uid").textbox('setValue',data);
+    	});
+    });
+    $("#pro").combobox({
+    	 valueField: 'id',    
+         textField: 'text',
+         limitToList:'true',
+         url:'AdminAdressThree',
+         onSelect: function(node){
+        	var test=node.text;
+        	 console.log(node.text);
+        	 $("#cit").combobox({
+        	   	 	valueField: 'id',    
+        	        textField: 'text',
+        	        limitToList:'true',
+        	        url:'AdminAdressTwo',
+        	        panelHeight:110,
+        	        queryParams: {
+        	    		"province" : test
+        	    	},
+
+        	        onSelect: function(node){
+        	        	var test2=node.text;
+        	        	 $("#cou").combobox({
+        	        	   	 	valueField: 'id',    
+        	        	        textField: 'text',
+        	        	        limitToList:'true',
+        	        	        url:'AdminAdressOne',
+        	        	        panelHeight:110,
+        	        	        queryParams: {
+        	        	    		"city" : test2
+        	        	    	},
+
+        	        	        onSelect: function(node){
+        	        	       	var test3=node.text;
+        	        	       	 console.log(node.text);
+        	        	       	 $("#detail").textbox('setValue',test+test2+test3);
+        	        	            
+        	        	        }
+        	        	   });
+        	            
+        	        }
+        	   });
+             
+         }
+    });
+    
+   
+    $("#level").combobox({
+    		valueField: 'label',
+    		textField: 'value',
+    		limitToList:'true',
+    		panelHeight:110,
+    		data: [{
+    			label: '1',
+    			value: '一'
+    		},{
+    			label: '2',
+    			value: '二'
+    		},{
+    			label: '3',
+    			value: '三'
+    		},{
+    			label: '4',
+    			value: '四'
+    		},{
+    			label: '5',
+    			value: '五'
+    		}]
+    });
+ 	
+    
+    
+   
+    
+    function submitForm(){
+    	
+    	var level=$("#level").combobox('getValue');
+    	var name=$("#name").val();
+    	var uid=$("#uid").val();
+    	var phone=$("#phone").val();
+    	var detail=$("#detail").val();
+    	
+    	console.log("d="+level);
+    	console.log("d="+name);
+    	console.log("d="+uid);
+    	console.log("d="+phone);
+    	console.log("d="+detail);
+    	
+    	$('#from0').form('submit',{    
+    	    url:'AdminAdressAdd',
+    	    novalidate:'true',
+    	    onSubmit: function(){    
+    	        // do some check    
+    	        // return false to prevent submit;
+    	       
+    	        return true;
+    	    },    
+    	    success:function(data){    
+    	        if(data==1){
+    	        	layer.alert("添加成功");
+    	        }else{
+    	        	layer.alert("添加失败");
+    	        }  
+    	    }    
+    	});
+    	
+    }
+    
+    </script>
+</body>
+</html>

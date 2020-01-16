@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>修改用户界面</title>
+
+</head>
+<body style="width: 1127px;height: 2000px;">
+
+      <div style="padding:10px 60px 20px 60px;position: absolute;right: 600px">
+          <table cellpadding="5">
+            <tr>
+              <td style="width: 50%"><input id="id" name="id" class="easyui-textbox" data-options="prompt:'编号',label:'编号:'" iconCls="icon-man" iconAlign=left style="width:100%;height:32px" readonly="readonly"/></td>
+              <td style="width: 50%"><input id="username" name="username" class="easyui-textbox" data-options="prompt:'用户名',label:'用户名:',validType:{length:[1,16],remote:['CheckName','username']}" invalidMessage= "名称已存在" validateOnCreate="false" iconCls="icon-save" iconAlign=left style="width:100%;height:32px"/></td>
+            </tr>
+            <tr>
+              <td style="width: 50%"><input id="password" name="password" class="easyui-textbox" data-options="prompt:'请输入新密码',label:'修改密码:',validType:{length:[3,16]}" iconCls="icon-man" iconAlign=left style="width:100%;height:32px" /></td>
+              <td style="width: 50%"><input id="email" name="email" class="easyui-textbox" data-options="prompt:'email',label:'email:',validType:'email'" iconCls="icon-save" iconAlign=left style="width:100%;height:32px"/></td>
+            </tr>
+            <tr>
+              <td style="width: 50%"><input id="sex" name="sex" class="easyui-textbox" data-options="prompt:'性别',label:'性别'" iconCls="icon-save" iconAlign=left style="width:100%;height:32px" readonly="readonly"/></td>
+              <td style="width: 50%" align="right"><input id="sexx" name="sexx" class="easyui-switchbutton" data-options="offText:'点击改变',onText:'点击改变'" style="width:100%;height:32px" />
+			  </td>
+            </tr>
+            <tr>
+			 <td style="width: 50%"><input id="flag" name="flag" class="easyui-textbox" data-options="prompt:'状态',label:'激活:'" iconCls="icon-man"  iconAlign=left style="width:100%;height:32px" readonly="readonly"/></td>
+             <td style="width: 50%" align="right"><input id="flagg" name="flagg" class="easyui-switchbutton" data-options="offText:'点击改变',onText:'点击改变'" style="width:100%;height:32px" />
+            
+            </tr>
+            <tr>
+             <td style="width: 50%"><input id="role" name="role" class="easyui-textbox" data-options="prompt:'身份',label:'会员:'" iconCls="icon-save" iconAlign=left style="width:100%;height:32px" readonly="readonly"/></td>
+             <td style="width: 50%" align="right"><input id="rolee" name="rolee" class="easyui-switchbutton" data-options="offText:'点击改变',onText:'点击改变'" style="width:100%;height:32px" />
+            </tr>
+
+             <tr>
+                 <td colspan="2" style="text-align: center">
+                     <a onclick="submitForm()" class="easyui-linkbutton"  data-options="iconCls:'icon-ok'" style="width:60%;height:40px;background-color: lightgreen;">确认修改</a>
+                 </td>
+             </tr>
+          </table>
+        
+        <div style="text-align:center;padding:5px; ">
+
+        </div>
+      </div>
+
+    <script type="text/javascript">
+    $(function(){
+    	$.post('AdminUpdet',function(result){
+    		
+    			$("#id").textbox({value:result.id});
+    			$("#username").textbox({value:result.username});
+    			//$("#password").textbox({value:result.password});
+    			$("#sex").textbox({value:result.gender});
+    			$("#email").textbox({value:result.email});
+    			$("#flag").textbox({value:result.flag==1?"已激活":"未激活"});
+    			$("#role").textbox({value:result.role==0?"普通用户":"会员用户"});
+    		
+    	});
+    });
+    
+    
+    $("#sexx").switchbutton({
+    	checked:false,
+    	onChange:function(check){
+    		var sex=$("#sex").val();
+    		if(sex=="男"){
+    			$("#sex").textbox({value:"女"})
+    		}else{
+    			$("#sex").textbox({value:"男"});
+    		}
+    	}
+    });
+    $("#flagg").switchbutton({
+    	checked:false,
+    	onChange:function(check){
+    		var sex=$("#flag").val();
+    		if(sex=="已激活"){
+    			$("#flag").textbox({value:"未激活"})
+    		}else{
+    			$("#flag").textbox({value:"已激活"});
+    		}
+    	}
+    });
+    $("#rolee").switchbutton({
+    	checked:false,
+    	onChange:function(check){
+    		var sex=$("#role").val();
+    		if(sex=="普通用户"){
+    			$("#role").textbox({value:"会员用户"})
+    		}else{
+    			$("#role").textbox({value:"普通用户"});
+    		}
+    	}
+    });
+    function submitForm(){
+    	var id=$("#id").val();
+    	var name=$("#username").val();
+    	var password=$("#password").val();
+    	var email=$("#email").val();
+    	var sex=$("#sex").val();
+    	var flag=$("#flag").val();
+    	var role=$("#role").val();
+    	console.log(id+name+password+sex+flag+role);
+    	$.ajax({
+    		url:'AdminUserU',
+    		type:'post',
+    		data:{
+    			'id':id,
+    			'username':name,
+    			'password':password,
+    			'email':email,
+    			'gender':sex,
+    			'flag':flag=='未激活'?0:1,
+    			'role':role=='普通用户'?0:1
+    		},
+    		success:function(data){
+    			if(data==1){
+    				layer.alert("修改成功",function(index){
+    		    		layer.close(index);
+    		    		addTab("用户管理","AdminListUser.html");
+    		    	});
+    			}else{
+    				layer.alert("修改失败");
+    			}
+    		}
+    	});
+    	
+    	
+    	
+    	
+    }
+    
+    </script>
+</body>
+</html>

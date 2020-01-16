@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>商品种类管理</title>
+</head>
+<body>
+<h1>商品种类管理</h1>
+<div id="toolbar">
+<input id="title" name="title" type="text" class="easyui-textbox" data-options="prompt:'输入搜索内容'">
+<label for="species">选择类别</label>
+<select id="species" name="species" class="easyui-combobox" data-options="panelHeight:45,panelWidth:60">
+<option value="id">编号</option>
+<option value="name">名称</option>
+</select>
+<label for="选择状态"></label>
+<select id="species2" name="species2" class="easyui-combobox" data-options="panelHeight:66">
+<option value="1">使用中</option>
+<option value="0">已弃用</option>
+<option value="2">全部</option>
+</select>
+
+<a id="search" class="easyui-linkbutton" iconCls="icon-search" onclick="search1()">点击搜索</a>
+<a id="upTy"   class="easyui-linkbutton" iconCls="icon-ok"     onclick="upType()">恢复</a>
+<a id="downTy" class="easyui-linkbutton" iconCls="icon-cut"    onclick="downType()">删除</a>
+</div>
+<table id="table"></table>
+<script type="text/javascript">
+$(function(){
+	$("#table").datagrid({
+		url:'GTList',
+		method:'post',
+		rownumbers: true,
+		pagination: true,
+		toolbar:'#toolbar',
+		columns:[[
+			{field:'ck',checkbox:true},
+			{field:'id',title:'编号',width:100,sortable:true},
+			{field:'name',title:'种类名称',width:100},
+			{field:'level',title:'等级',width:100,sortable:true},
+			{field:'parent',title:'父类编号',width:100,sortable:true},
+			{field:'status',title:'状态',width:100,sortable:true,formatter:function(value,row,index){
+				if(value==1){
+					return "使用中";
+				}
+				return "已弃用";
+			}}
+		]]
+		
+	});
+});
+function upType(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中种类");
+		return false;
+	}
+	layer.confirm("你确定要恢复这些种类吗？",{btn:["确定","取消"]},function(index){
+		var check="";
+		$.each(ck,function(index,c){
+			var id=c.id;
+			check+=id+',';
+		});
+		console.log("check="+check);
+		var uri='upType';
+		$.post(uri,{'check':check},function(result){
+			if(result==1){
+				$("#table").datagrid('reload');
+				layer.close(index);
+				layer.alert("删除成功");
+			}else{
+				layer.close(index);
+				layer.alert("删除失败");
+			}
+		});
+	});
+	
+}
+
+function downType(){
+	var ck=$("#table").datagrid("getSelections");
+	if(ck.length==0){
+		layer.alert("请选中商品种类");
+		return;
+	}
+	layer.confirm("你确定眼删除这些商品种类",{btn:["确定","取消"]},function(index){
+		var check="";
+		$.each(ck,function(index,c){
+			var id=c.id;
+			check+=id+",";
+		});
+		console.log("check="+check);
+		var uri='downType';
+		$.post(uri,{"check":check},function(result){
+			if(result==1){
+				$("#table").datagrid('reload');
+				layer.close(index);
+				layer.alert("删除成功");
+			}else{
+				layer.close(index);
+				layer.alert("删除失败");
+			}
+		});
+	});
+}
+ function search1(){
+	 $("#table").datagrid("load",{
+		 title:$("#title").val(),
+		 species:$("#species").combobox('getValue'),
+		 species2:$("#species2").combobox('getValue')
+	 });
+ }
+</script>
+</body>
+</html>

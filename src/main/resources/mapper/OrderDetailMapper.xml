@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.mapper.OrderDetailMapper">
+  <resultMap id="BaseResultMap" type="com.qf.pojo.OrderDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="Oid" jdbcType="VARCHAR" property="oid" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="Money" jdbcType="INTEGER" property="money" />
+    <result column="time" property="time" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, Oid, pid, num, Money
+  </sql>
+<select id="selectByOid" parameterType="java.lang.String" resultMap="BaseResultMap">
+SELECT od.Oid,g.name gName,od.num,od.Money, o.time,o.`status` FROM `tb_orderdetail` od LEFT JOIN tb_order o ON od.Oid=o.id LEFT JOIN tb_goods g ON od.pid=g.id
+where od.Oid=#{id}
+
+</select>
+
+  <select id="selectByUI" parameterType="com.qf.pojo.UINum2" resultMap="BaseResultMap">
+    select o.*,g.name gName from tb_orderdetail o left join tb_goods g on o.pid=g.id
+    <where>
+      <if test="species!=null and title!=null and title!=''">
+        o.${species} like '%${title}%'
+      </if>
+    </where>
+    <if test="sort!=null and order!=null">
+      order by ${sort} ${order}
+    </if>
+    limit #{page},#{rows}
+  </select>
+
+  <select id="selectCountByUI" parameterType="com.qf.pojo.UINum2" resultType="java.lang.Integer">
+    select count(1) from tb_orderdetail
+    <where>
+      <if test="species!=null and title!=null and title!=''">
+        ${species} like '%${title}%'
+      </if>
+    </where>
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_orderdetail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_orderdetail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qf.pojo.OrderDetail">
+    insert into tb_orderdetail (id, Oid, pid, 
+      num, Money)
+    values (#{id,jdbcType=INTEGER}, #{oid,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER}, 
+      #{num,jdbcType=INTEGER}, #{money,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qf.pojo.OrderDetail">
+    insert into tb_orderdetail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="oid != null">
+        Oid,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="money != null">
+        Money,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="oid != null">
+        #{oid,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="money != null">
+        #{money,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qf.pojo.OrderDetail">
+    update tb_orderdetail
+    <set>
+      <if test="oid != null">
+        Oid = #{oid,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="money != null">
+        Money = #{money,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qf.pojo.OrderDetail">
+    update tb_orderdetail
+    set Oid = #{oid,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=INTEGER},
+      num = #{num,jdbcType=INTEGER},
+      Money = #{money,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
