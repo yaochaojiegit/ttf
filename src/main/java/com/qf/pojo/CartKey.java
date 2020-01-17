@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class CartKey {
-    
+
     private Integer id;
 
     private Integer pid;
